@@ -19,21 +19,29 @@
         <div class="py-2 grid grid-cols-6 grid-rows-6 gap-2 text-blue-500" id="card">
             <div class="col-start-3 col-span-2">
                 <%- include("header.ejs") %>
+                
                 <h6 class = "py-4">Signup as a new user</h6>
+                <ul>
+                    <% if(messages && messages.error && messages.error.length > 0)  { %>
+                        <% for(var i=0; i<messages.error.length; i++) { %>
+                                <li class="bg-red-500 border-red-800 px-4 py-2"> <%= messages.error[i] %></li>
+                        <% } %>
+                      <% } %>
+                </ul>
                 <form action="/users" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="block mx-3 px-4 gap-2">
                         <div class="block-auto my-3">
                             <label class="text-sm">First Name</label>
-                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="FirstName" placeholder="First Name">
+                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="firstName" placeholder="First Name">
                         </div>
                         <div class="block-auto my-3">
                             <label class="text-sm">Last Name</label>
-                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="LastName" placeholder="Last Name">
+                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="lastName" placeholder="Last Name">
                         </div>
                         <div class="block-auto my-3">
                             <label class="text-sm">Email</label>
-                            <input class="rounded border-2 text-sm p-2 w-full" type="email" name="Email" placeholder="Email">
+                            <input class="rounded border-2 text-sm p-2 w-full" type="email" name="email" placeholder="Email">
                         </div>
                         <div class="block-auto my-3">
                             <label class="text-sm">Password</label>
@@ -42,11 +50,11 @@
                         <div class="flex w-fit items-center px-2 py-1  my-2">
                             <div class="m-3 w-full rounded hover:bg-blue-100">
                                 <label class="text-sm font-semibold" for="admin">Admin</label>
-                                <input class="rounded border-2 text-sm p-2 w-full" name="author" type="radio" id="admin" value="admin">
+                                <input class="rounded border-2 text-sm p-2 w-full" name="role" type="radio" id="admin" value="admin">
                             </div>
                             <div class="m-3 w-full rounded hover:bg-blue-100">
                                 <label class="text-sm font-semibold" for="player">Player</label>
-                                <input class="rounded border-2 text-sm p-2 w-full" name="author" type="radio" id="player" value="admin">
+                                <input class="rounded border-2 text-sm p-2 w-full" name="role" type="radio" id="player" value="player">
                             </div>
 
                         </div>

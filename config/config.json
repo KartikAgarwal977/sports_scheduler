@@ -2,14 +2,14 @@
   "development": {
     "username": "postgres",
     "password": "sports",
-    "database": "database_development",
+    "database": "sports_scheduler_database",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "sports",
-    "database": "database_test",
+    "database": "sports_scheduler_test_database",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

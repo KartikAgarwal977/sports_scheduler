@@ -18,15 +18,16 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        unique: true,
+        allowNull: false
       },
       password: {
         type: Sequelize.STRING
       },
       role: {
         type: Sequelize.STRING,
-        isIn: [['admin','player']]
+        isIn: [['admin', 'player']],
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
