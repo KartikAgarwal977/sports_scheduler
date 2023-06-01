@@ -17,16 +17,19 @@
                     <h3 class="text-2xl font-serif font-semibold underline text-blue-500 p-2" >Administrative actions</h3>
                     <ul class="list-none">
                         <li>
-                            <a href="/new" class="text-blue-400 underline hover:text-blue-200">Create a new sport</a>
+                            <a href="/sports/new" class="text-blue-400 underline hover:text-blue-200">Create a new sport</a>
                         </li>
                         <li>
                             <a href="/report" class="text-blue-400 underline hover:text-blue-200">view report</a>
                         </li>
                     </ul>
                     <% } %>
+                    <div>
+                        <%- include('sportsList.ejs',{title: "This following sports are available. Please select one:", data:sports_list}) %>
+                    </div>
         </div>
     </div>
 
-    <a href="/signout" class="blue-500 p-5">signout</a>
+    <a href="/signout" class="bg-blue-400 text-white px-3 py-2">signout</a>
 </body>
 </html>

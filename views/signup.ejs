@@ -32,13 +32,10 @@
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="block mx-3 px-4 gap-2">
                         <div class="block-auto my-3">
-                            <label class="text-sm">First Name</label>
-                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="firstName" placeholder="First Name">
+                            <label class="text-sm">Name</label>
+                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="userName" placeholder="Name">
                         </div>
-                        <div class="block-auto my-3">
-                            <label class="text-sm">Last Name</label>
-                            <input class="rounded border-2 text-sm p-2 w-full" type="text" name="lastName" placeholder="Last Name">
-                        </div>
+                    
                         <div class="block-auto my-3">
                             <label class="text-sm">Email</label>
                             <input class="rounded border-2 text-sm p-2 w-full" type="email" name="email" placeholder="Email">
@@ -54,7 +51,7 @@
                             </div>
                             <div class="m-3 w-full rounded hover:bg-blue-100">
                                 <label class="text-sm font-semibold" for="player">Player</label>
-                                <input class="rounded border-2 text-sm p-2 w-full" name="role" type="radio" id="player" value="player">
+                                <input class="rounded border-2 text-sm p-2 w-full" name="role" type="radio" id="player" checked value="player">
                             </div>
 
                         </div>

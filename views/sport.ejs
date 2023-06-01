@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title><%= title %></title>
+</head>
+<body>
+    <div class="py-2 grid grid-cols-6 grid-rows-6 gap-2 text-blue-500">
+        <div class="col-start-3 col-span-2">
+            <h1 class="text-4xl text-blue-500"><%= title %></h1>
+            <a class="block" href="/sports/<%= data%>/session">create a new session</a>
+            <a class="block" href="">View previous sessions</a>
+        </div>  
+        <% if (role === 'admin') { %>
+            <div class="col-start-5 col-span-2">
+                <div class="grid-rows-6 row-start-2">
+                    <a href="">edit</a>
+                    <a href="">delete</a>
+                </div>
+            </div>      
+        <% } %>
+    </div>
+</body>
+</html>

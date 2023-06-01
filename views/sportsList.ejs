@@ -1,0 +1,8 @@
+<h1 class="text-2xl text-blue-500"><%= title %></h1>
+<ul class="list-none">
+    <% for (let i = 0; i < data.length; i++) { %>
+        <li class="mx-3">
+            <a href="/sports/<%= data[i].id %>" class="text-blue-400 hover:text-blue-500 underline text-2xl"><%= data[i].sports_name %></a>
+        </li>
+   <%  } %>
+</ul>

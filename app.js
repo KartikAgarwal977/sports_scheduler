@@ -1,7 +1,7 @@
 const express = require('express')
 const csrf = require("tiny-csrf");
 const app = express();
-const {User} = require('./models')
+const {User, sports} = require('./models')
 const LocalStrategy = require("passport-local")
 const connectEnsureLogin = require('connect-ensure-login');
 const bcrypt = require('bcrypt');
@@ -14,6 +14,7 @@ app.use(cookieParser("cookie-parser-secret"));
 app.use(express.urlencoded({ extended: false }));
 app.use(flash())
 const passport = require('passport');
+const { render } = require('ejs');
 app.use(session({
   secret: "keyboard cat",
   cookie: {
@@ -89,45 +90,21 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.get('/sports', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-
-  const account = await User.findByPk(req.user.id)
-  const username = `${account.firstName} ${account.lastName}`
-  console.log(username)
-  console.log(account.role)
-  if (req.accepts("html")) {
-    res.render("home",
-      {
-        title: "Home",
-        username,
-        role: account.role,
-        csrfToken: req.csrfToken()
-      })
-  }
-  else {
-    res.json({ message: "Welcome to the sports scheduler." })
-    }
-})
-
 app.get('/signup', async (req, res) => {
-  if (req.accepts("html")) {
     res.render("signup",
       {
         title: "Sign Up",
         csrfToken: req.csrfToken()
       })
-  }
-  else {
-    res.json({ message: "sign up page" })
-    }
+
 })
 
 app.post('/users', async (req, res) => {
   const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
   console.log(hashedPwd)
-  console.log(`firstName ${req.body.firstName}`)
-  if (req.body.firstName == "") {
-    req.flash('error', 'First name is required')
+  console.log(`firstName ${req.body.userName}`)
+  if (req.body.userName == "") {
+    req.flash('error', 'Name is required')
     return res.redirect('/signup')
   }
   if (req.body.email == "") {
@@ -140,8 +117,7 @@ app.post('/users', async (req, res) => {
   }
   try {
     const user = await User.create({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      userName: req.body.userName,
       email: req.body.email,
       password: hashedPwd,
       role: req.body.role
@@ -149,8 +125,7 @@ app.post('/users', async (req, res) => {
     req.login(user, (err) => {
       if (err) {
         console.log(err)
-      }
-      
+      }  
       res.redirect('/sports')
     })
   }
@@ -160,14 +135,12 @@ app.post('/users', async (req, res) => {
   }
 })
 app.get('/login', async (req, res) => {
-  if (req.accepts("html")) {
     res.render("login",
       {
         title: "Login",
         csrfToken: req.csrfToken(),
         
       })
-  }
 })
 app.post('/login', passport.authenticate('local',
   {
@@ -176,7 +149,7 @@ app.post('/login', passport.authenticate('local',
   }
 ), (req, res) => {
   res.redirect('/sports')
-  })
+})
 app.get('/signout', async (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -186,4 +159,73 @@ app.get('/signout', async (req, res) => {
   })
 })
 
+app.get('/sports', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+
+  const account = await User.findByPk(req.user.id)
+  const username = `${account.userName}`
+  const sports_list = await sports.allsports()
+  console.log(username)
+  console.log(account.role)
+  if (req.accepts("html")) {
+    res.render("home",
+      {
+        title: "Home",
+        username,
+        role: account.role,
+        csrfToken: req.csrfToken(),
+        sports_list
+      })
+  }
+  else {
+    res.json({ message: "Welcome to the sports scheduler." })
+    }
+})
+app.get('/sports/new', connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (req, res) => {
+    res.render("new",
+      {
+        title: "New Sports",
+        csrfToken: req.csrfToken()
+      })  
+})
+
+app.post('/new', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  const user = await req.user.id
+  const account = await User.findByPk(user)
+  const useremail = `${account.email}`
+  try {
+    const sport = await sports.addsport(
+      req.body.Sports,
+      useremail
+    )
+    console.log(sport.sports_name)
+    res.redirect('/sports')
+  } catch (error) {
+    console.log(error)
+  }
+})
+app.get('/sports/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  const account = await User.findByPk(req.user.id)
+  const role = await account.role
+  const sport = await sports.findByPk(req.params.id)
+  const sport_name = sport.sports_name
+  res.render("sport", {
+    title: sport_name,
+    role,
+    data: sport.id
+  })
+})
+app.get('/sports/:id/session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  const sport = await sports.findByPk(req.params.id)
+  const sport_name = sport.sports_name
+  try {
+    res.render("session", {
+      title: "New Session",
+      csrfToken: req.csrfToken(),
+      sport_name
+    })
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
 module.exports = app;
