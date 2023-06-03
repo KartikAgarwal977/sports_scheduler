@@ -1,7 +1,7 @@
 const express = require('express')
 const csrf = require("tiny-csrf");
 const app = express();
-const {User, sports} = require('./models')
+const {User, sports, sessions } = require('./models')
 const LocalStrategy = require("passport-local")
 const connectEnsureLogin = require('connect-ensure-login');
 const bcrypt = require('bcrypt');
@@ -214,18 +214,57 @@ app.get('/sports/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => 
     data: sport.id
   })
 })
-app.get('/sports/:id/session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+app.get('/sports/:id/new_session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   const sport = await sports.findByPk(req.params.id)
   const sport_name = sport.sports_name
+  const sport_id = sport.id
   try {
     res.render("session", {
       title: "New Session",
       csrfToken: req.csrfToken(),
-      sport_name
+      sport_name,
+      sport_id
     })
   }
   catch (error) {
     console.log(error)
   }
+})
+app.post(`/session`, connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  const user = await await req.user.id
+  const account = await User.findByPk(user)
+  const useremail = `${account.email}`
+  console.log(req.body.sport_id)
+  if (req.body.Date == 'Invalid date') {
+    req.flash('error', 'Invalid date')
+    return res.redirect(`/sports/${req.body.sport_id}/new_session`)
+  }
+  if (req.body.address == "") {
+    req.flash('error', 'address is required')
+    return res.redirect(`/sports/${req.body.sport_id}/new_session`)
+  }
+  if (req.body.players == "") {
+    req.flash('error', 'atleast one player name is required')
+    return res.redirect(`/sports/${req.body.sport_id}/new_session`)
+  }
+  if (req.body.Total_player) {
+    req.flash('error', 'Number of players required')
+    return res.redirect(`/sports/${req.body.sport_id}/new_session`)
+  }
+  try {
+    const session = await sessions.addsession({
+      date: req.body.Date,
+      address: req.body.address,
+      player: req.body.players,
+      total: req.body.Total_player,
+      organizer: useremail,
+      sportId: req.body.sport_id,
+    })
+    res.redirect(`/sports/${req.body.sport_id}`)
+  }
+  catch (error) {
+    console.log(error)
+  }
+
 })
 module.exports = app;
