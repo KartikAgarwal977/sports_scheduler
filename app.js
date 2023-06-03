@@ -78,25 +78,34 @@ function requirePublisher(req, res, next) {
 
 
 app.get('/', async (req, res) => {
-  if (req.accepts("html")) {
-    res.render("index",
-      {
-        title: "Sports Scheduler",
-        csrfToken: req.csrfToken()
-      })
+  if (req.user) {
+    res.redirect("/todos");
   }
   else {
-    res.json({ message: "Welcome to the sports scheduler." })
+    if (req.accepts("html")) {
+      res.render("index",
+        {
+          title: "Sports Scheduler",
+          csrfToken: req.csrfToken()
+        })
     }
+    else {
+      res.json({ message: "Welcome to the sports scheduler." })
+    }
+  }
 })
 
 app.get('/signup', async (req, res) => {
+  if (req.user) {
+    res.redirect("/todos");
+  }
+  else {
     res.render("signup",
       {
         title: "Sign Up",
         csrfToken: req.csrfToken()
       })
-
+  }
 })
 
 app.post('/users', async (req, res) => {
@@ -135,12 +144,17 @@ app.post('/users', async (req, res) => {
   }
 })
 app.get('/login', async (req, res) => {
+  if (req.user) {
+    res.redirect("/todos");
+  }
+  else {
     res.render("login",
       {
         title: "Login",
         csrfToken: req.csrfToken(),
         
       })
+  }
 })
 app.post('/login', passport.authenticate('local',
   {
@@ -247,7 +261,7 @@ app.post(`/session`, connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
     req.flash('error', 'atleast one player name is required')
     return res.redirect(`/sports/${req.body.sport_id}/new_session`)
   }
-  if (req.body.Total_player) {
+  if (req.body.Total_player == "") {
     req.flash('error', 'Number of players required')
     return res.redirect(`/sports/${req.body.sport_id}/new_session`)
   }
