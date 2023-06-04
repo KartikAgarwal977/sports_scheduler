@@ -79,7 +79,7 @@ function requirePublisher(req, res, next) {
 
 app.get('/', async (req, res) => {
   if (req.user) {
-    res.redirect("/todos");
+    res.redirect("/sports");
   }
   else {
     if (req.accepts("html")) {
@@ -97,7 +97,7 @@ app.get('/', async (req, res) => {
 
 app.get('/signup', async (req, res) => {
   if (req.user) {
-    res.redirect("/todos");
+    res.redirect("/sports");
   }
   else {
     res.render("signup",
@@ -146,7 +146,7 @@ app.post('/users', async (req, res) => {
 })
 app.get('/login', async (req, res) => {
   if (req.user) {
-    res.redirect("/todos");
+    res.redirect("/sports");
   }
   else {
     res.render("login",
