@@ -10,7 +10,9 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       sports_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       createdAt: {
         allowNull: false,

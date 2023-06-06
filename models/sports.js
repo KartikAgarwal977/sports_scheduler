@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, where
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class sports extends Model {
@@ -23,6 +23,23 @@ module.exports = (sequelize, DataTypes) => {
     }
     static async allsports() {
       return await this.findAll()
+    }
+    static editSport(id, sportName) {
+      return this.update(
+        { sports_name: sportName },
+        {
+          where: {
+            id: id
+          }
+        }
+      );
+    }
+    static deleteSport(id) {
+      return this.destroy({
+        where: {
+          id: id
+        }
+        });
     }
   }
   sports.init({

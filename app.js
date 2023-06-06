@@ -218,6 +218,7 @@ app.post('/new', connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (r
     console.log(sport.sports_name)
     res.redirect('/sports')
   } catch (error) {
+    req.flash("error", "sport already exist")
     console.log(error)
   }
 })
@@ -229,8 +230,33 @@ app.get('/sports/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => 
   res.render("sport", {
     title: sport_name,
     role,
-    data: sport.id
+    data: req.params.id
   })
+})
+app.get('/sports/:id/edit', connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (req, res) => {
+  res.render('sportedit', {
+    title: 'sport edit',
+    csrfToken: req.csrfToken(),
+    sportId: req.params.id
+  }) 
+})
+app.post('/sports/:id/edit', connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (req, res) => {
+  try {
+    await sports.editSport(req.params.id, req.body.EditSport)
+    res.redirect('/sports')
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
+app.get('/sports/:id/delete', connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (req, res) => {
+  try {
+    await sports.deleteSport(req.params.id)
+    res.redirect('/sports')
+  }
+  catch (error) {
+    console.log(error)
+  }
 })
 app.get('/sports/:id/new_session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   const sport = await sports.findByPk(req.params.id)
@@ -263,7 +289,7 @@ app.post(`/session`, connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
     req.flash('error', 'atleast one player name is required')
     return res.redirect(`/sports/${req.body.sport_id}/new_session`)
   }
-  if (req.body.Total_player == "") {
+  if (req.body.needed_player == "") {
     req.flash('error', 'Number of players required')
     return res.redirect(`/sports/${req.body.sport_id}/new_session`)
   }
@@ -272,15 +298,37 @@ app.post(`/session`, connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
       date: req.body.Date,
       address: req.body.address,
       player: req.body.players,
-      total: req.body.Total_player,
+      needed: req.body.needed_player,
       sportId: req.body.sport_id,
       userId: req.user.id
     })
-    res.redirect(`/sports/${req.body.sport_id}`)
+    // console.log(JSON.stringify(session, null, 2));
+    res.redirect(`/sessions/${session.id}`)
   }
   catch (error) {
     console.log(error)
   }
-
+  app.get('/sessions/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+    const session = await sessions.findByPk(req.params.id)
+    const sportid = session.sportId
+    const sport = await sports.findByPk(sportid)
+    const sport_name = sport.sports_name
+    console.log(sport_name)
+    const details = await sessions.getsession(req.params.id)
+    try {
+      res.render('sessions', {
+        title: 'sessions',
+        csrfToken: req.csrfToken(),
+        sportName: sport_name,
+        sessionId: req.params.id,
+        details
+      })
+    }
+    catch (error) {
+      console.log(error)
+      }
+  })
 })
+
+
 module.exports = app;

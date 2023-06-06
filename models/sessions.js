@@ -19,14 +19,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
     }
-    static addsession({ date, address, player, total, sportId, userId }) {
+    static addsession({ date, address, player, needed, sportId, userId }) {
       return this.create({
         date: date,
         address: address,
         player: player,
-        total: total,
+        needed: needed,
         sportId: sportId,
         userId: userId
+      })
+    }
+    static getsession(id) {
+      return this.findOne({
+        where: {
+          id: id
+        }
       })
     }
   }
@@ -34,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     date: DataTypes.DATE,
     address: DataTypes.STRING,
     player: DataTypes.STRING,
-    total: DataTypes.STRING,
+    needed: DataTypes.INTEGER,
     sportId: DataTypes.INTEGER
   }, {
     sequelize,

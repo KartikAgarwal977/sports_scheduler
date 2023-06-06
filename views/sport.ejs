@@ -15,10 +15,10 @@
             <a class="block" href="">View previous sessions</a>
         </div>  
         <% if (role === 'admin') { %>
-            <div class="col-start-5 col-span-2">
+            <div class="col-start-5 col-span-2 py-5">
                 <div class="grid-rows-6 row-start-2">
-                    <a href="">edit</a>
-                    <a href="">delete</a>
+                    <a href="/sports/<%= data %>/edit" class="text-xl hover:hover:text-green-800">edit</a><br>
+                    <a href="/sports/<%= data %>/delete" class="text-xl hover:hover:text-green-800">delete</a>
                 </div>
             </div>      
         <% } %>

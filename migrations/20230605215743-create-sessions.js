@@ -18,8 +18,8 @@ module.exports = {
       player: {
         type: Sequelize.STRING
       },
-      total: {
-        type: Sequelize.STRING
+      needed: {
+        type: Sequelize.INTEGER
       },
       sportId: {
         type: Sequelize.INTEGER
