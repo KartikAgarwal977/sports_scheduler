@@ -11,10 +11,10 @@ const path = require("path");
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser("cookie-parser-secret"));
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(flash())
 const passport = require('passport');
-const { render } = require('ejs');
 app.use(session({
   secret: "keyboard cat",
   cookie: {
@@ -52,7 +52,7 @@ passport.deserializeUser((id, done) => {
   })
 
 passport.use(new LocalStrategy({
-  usernameField: "Email",
+  usernameField: "email",
   passwordField: "password"
 }, (email, password, done) => {
   User.findOne({ where: { email: email } })
@@ -111,7 +111,8 @@ app.get('/signup', async (req, res) => {
 app.post('/users', async (req, res) => {
   const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
   console.log(hashedPwd)
-  console.log(`firstName ${req.body.userName}`)
+  console.log(`userName ${req.body.userName}`)
+  
   if (req.body.userName == "") {
     req.flash('error', 'Name is required')
     return res.redirect('/signup')
@@ -139,6 +140,7 @@ app.post('/users', async (req, res) => {
     })
   }
   catch (error) {
+    res.json(error)
     console.error(error)
     req.flash("error", "Email already exist")
     return res.redirect("/signup")
@@ -203,14 +205,16 @@ app.get('/sports/new', connectEnsureLogin.ensureLoggedIn(), requirePublisher, as
       })  
 })
 
-app.post('/new', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const user = await req.user.id
-  const account = await User.findByPk(user)
-  const useremail = `${account.email}`
+app.post('/new', connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (req, res) => {
+  if (req.body.Sports === "") {
+    req.flash('error', 'sports cannot be empty')
+    return res.redirect('/sports/new')
+  }
   try {
     const sport = await sports.addsport(
-      req.body.Sports,
-      useremail
+      {
+        sports_name: req.body.Sports,
+        userId: req.user.id}
     )
     console.log(sport.sports_name)
     res.redirect('/sports')
@@ -232,7 +236,8 @@ app.get('/sports/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => 
 app.get('/sports/:id/new_session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   const sport = await sports.findByPk(req.params.id)
   const sport_name = sport.sports_name
-  const sport_id = sport.id
+  const sport_id = req.params.id
+  console.log(`the value of sports id ${req.params.id}`)
   try {
     res.render("session", {
       title: "New Session",
@@ -246,9 +251,6 @@ app.get('/sports/:id/new_session', connectEnsureLogin.ensureLoggedIn(), async (r
   }
 })
 app.post(`/session`, connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const user = await await req.user.id
-  const account = await User.findByPk(user)
-  const useremail = `${account.email}`
   console.log(req.body.sport_id)
   if (req.body.Date == 'Invalid date') {
     req.flash('error', 'Invalid date')
@@ -272,8 +274,8 @@ app.post(`/session`, connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
       address: req.body.address,
       player: req.body.players,
       total: req.body.Total_player,
-      organizer: useremail,
       sportId: req.body.sport_id,
+      userId: req.user.id
     })
     res.redirect(`/sports/${req.body.sport_id}`)
   }

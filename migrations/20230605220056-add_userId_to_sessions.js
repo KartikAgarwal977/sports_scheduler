@@ -2,12 +2,18 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('sessions', 'sportId', {
-      type: Sequelize.INTEGER,
-      allowNull: true, // Modify this according to your requirements
+  async up (queryInterface, Sequelize) {
+    await queryInterface.addColumn("sessions", "userId", {
+      type: Sequelize.DataTypes.INTEGER,
     });
-    /**
+    await queryInterface.addConstraint("sessions", {
+      fields: ["userId"],
+      type: "foreign key",
+      references: {
+        table: "Users",
+        field: "id",
+      },
+    });/**
      * Add altering commands here.
      *
      * Example:
@@ -16,7 +22,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('sessions', 'sportId');
+    await queryInterface.removeColumn("sessions", "userId");
     /**
      * Add reverting commands here.
      *

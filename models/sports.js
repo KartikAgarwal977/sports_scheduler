@@ -11,11 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      sports.belongsTo(models.User, {
+        foreignKey: "userId"
+      })
     }
-    static addsport(sports, email) {
+    static addsport({ sports_name, userId }) {
       return this.create({
-        sports_name: sports,
-        email: email
+        sports_name,
+        userId: userId
       })
     }
     static async allsports() {
@@ -23,8 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   sports.init({
-    sports_name: DataTypes.STRING,
-    email: DataTypes.STRING
+    sports_name: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'sports',

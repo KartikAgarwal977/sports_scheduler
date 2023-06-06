@@ -10,16 +10,23 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      sessions.belongsTo(models.sports, {
+        foreignKey: "sportId",
+      });
     }
-    static addsession({ date, address, player, total, organizer, sportId }) {
+    static associate(models) {
+      sessions.belongsTo(models.User, {
+        foreignKey: "userId",
+      });
+    }
+    static addsession({ date, address, player, total, sportId, userId }) {
       return this.create({
-        date,
-        address,
-        player,
-        total,
-        organizer,
-        sportId
+        date: date,
+        address: address,
+        player: player,
+        total: total,
+        sportId: sportId,
+        userId: userId
       })
     }
   }
@@ -28,8 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     player: DataTypes.STRING,
     total: DataTypes.STRING,
-    organizer: DataTypes.STRING,
-    sportId: DataTypes.STRING
+    sportId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'sessions',
