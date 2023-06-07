@@ -1,32 +1,7 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="csrf-token" content="<%= csrfToken %>">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./css/styles.css">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <title>
-            <%= title %>
-        </title>
-    </head>
-    <script>
-        var token = document
-            .querySelector("meta[name = 'csrf-token']")
-            .getAttribute('content')
-    </script>
-    <body>
-        <div class="py-2 grid grid-cols-6 grid-rows-6 gap-2 text-blue-500" id="card">
-            <div class="col-start-3 col-span-2">
-                <%- include("header.ejs") %>
-                <ul>
-                    <% if(messages && messages.error && messages.error.length > 0)  { %>
-                        <% for(var i=0; i<messages.error.length; i++) { %>
-                                <li class="bg-red-500 border-red-800 px-4 py-2"> <%= messages.error[i] %></li>
-                        <% } %>
-                      <% } %>
-                </ul>
+    <%- include("header.ejs",{title}) %>
+    
                 <h6 class = "py-4">Login to your account</h6>
+                <%- include("errorNotification.ejs",{messages})  %>
                 <form action="/login" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="block mx-3 px-4 gap-2">
@@ -44,7 +19,4 @@
                     </div>
                 </form>
                 <a href="/signup" class="text-blue-500 my-3 mx-8">Create an account</a>
-            </div>
-        </div>
-    </body>
-</html>
+                <%- include("footer.ejs") %>  

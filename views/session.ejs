@@ -1,24 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="csrf-token" content="<%= csrfToken %>">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title><%= title %></title>
-</head>
-<body>
-    <div class="py-2 grid grid-cols-6 grid-rows-6 gap-2 text-blue-500" id="card">
-        <div class="col-start-3 col-span-2">
+<%- include("header.ejs",{title}) %>
             <h6 class = "py-4 text-4xl text-blue-500 underline font-semibold"><%= `New ${sport_name} Session`  %></h6>
-            <ul>
-                <% if(messages && messages.error && messages.error.length > 0)  { %>
-                    <% for(var i=0; i<messages.error.length; i++) { %>
-                            <li class="bg-red-400 border-red-800 rounded px-4 py-2"> <%= messages.error[i] %></li>
-                    <% } %>
-                  <% } %>
-            </ul>
+            <%- include("errorNotification.ejs",{messages})  %>
             <form action="/session" method="post">
                 <input type="hidden" name="sport_id" value="<%= sport_id %>">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -44,7 +26,4 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
-</body>
-</html>
+<%- include("footer.ejs") %>  

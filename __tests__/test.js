@@ -36,7 +36,6 @@ describe("Sports Schedular Application", function () {
   test("Sign up as Admin", async () => {
     let res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
-    console.log(csrfToken + " csrftoken");
     res = await agent
       .post("/users")
       .send({
@@ -47,7 +46,6 @@ describe("Sports Schedular Application", function () {
         role: "admin",
       })
       .withCredentials();
-    console.log(res.text);
     expect(res.statusCode).toBe(302);
   });
   test("Sign out ", async () => {
@@ -61,7 +59,6 @@ describe("Sports Schedular Application", function () {
   test("Sign up as player", async () => {
     let res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
-    console.log(csrfToken + " csrftoken");
     res = await agent
       .post("/users")
       .send({
@@ -72,7 +69,6 @@ describe("Sports Schedular Application", function () {
         role: "player",
       })
       .withCredentials();
-    console.log(res.text);
     expect(res.statusCode).toBe(302);
   });
   test("sign out as player", async () => {
@@ -89,7 +85,7 @@ describe("Sports Schedular Application", function () {
     await login(agent, "admin@gmail.com", "12345678");
     let res = await agent.get("/sports");
     expect(res.statusCode).toBe(200);
-    res = await agent.get("/sports/new");
+    res = await agent.get("/sports/new_sport");
     let csrfToken = extractCsrfToken(res);
     expect(res.statusCode).toBe(200);
     res = await agent.post("/new").send({
@@ -105,7 +101,7 @@ describe("Sports Schedular Application", function () {
     await login(agent, "player@gmail.com", "12345678");
     let res = await agent.get("/sports");
     expect(res.statusCode).toBe(200);
-    res = await agent.get("/sports/new");
+    res = await agent.get("/sports/new_sport");
     expect(res.statusCode).toBe(401);
     await agent.get("/sigout");
   });
@@ -113,7 +109,7 @@ describe("Sports Schedular Application", function () {
   test("Admin add sports", async () => {
     const agent = request.agent(server);
     await login(agent, "admin@gmail.com", "12345678");
-    res = await agent.get("/sports/new");
+    res = await agent.get("/sports/new_sport");
     let csrfToken = extractCsrfToken(res);
     expect(res.statusCode).toBe(200);
     res = await agent.post("/new").send({

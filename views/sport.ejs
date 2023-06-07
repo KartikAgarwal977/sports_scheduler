@@ -1,27 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title><%= title %></title>
-</head>
-<body>
-    <div class="py-2 grid grid-cols-6 grid-rows-6 gap-2 text-blue-500">
-        <div class="col-start-3 col-span-2">
-            <h1 class="text-4xl text-blue-500"><%= title %></h1>
-            <a class="block" href="/sports/<%= data%>/new_session">create a new session</a>
-            <a class="block" href="">View previous sessions</a>
-        </div>  
-        <% if (role === 'admin') { %>
-            <div class="col-start-5 col-span-2 py-5">
+<%- include("header.ejs",{title}) %>
+    <h1 class="text-xl text-blue-500"> Upcoming sessions</h1>
+    <br>
+
+    <%- include('display_sessions.ejs',{data:upcoming_session}) %>
+        <br><br>
+        <a class="block" href="/sports/<%= sportId%>/new_session">create a new session</a>
+        <a class="block" href="/sports/<%= sportId%>/previous_sessions">View previous sessions</a>
+        </div>
+        <% if (role==='admin' ) { %>
+            <div class="col-start-6 col-span-2 py-5">
                 <div class="grid-rows-6 row-start-2">
-                    <a href="/sports/<%= data %>/edit" class="text-xl hover:hover:text-green-800">edit</a><br>
-                    <a href="/sports/<%= data %>/delete" class="text-xl hover:hover:text-green-800">delete</a>
+                    <a href="/sports/<%= sportId %>/edit" class="text-xl hover:hover:text-green-800">edit</a><br>
+                    <a href="/sports/<%= sportId %>/delete" class="text-xl hover:hover:text-green-800">delete</a>
                 </div>
-            </div>      
-        <% } %>
-    </div>
-</body>
-</html>
+            </div>
+            <% } %>
+                </div>
+<%- include("footer.ejs") %>     

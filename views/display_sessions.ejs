@@ -1,0 +1,20 @@
+<% for (var i=0; i < data.length; i++) { %>
+    <div class="px-4 py-2 border-x-4 border-y-2 border-blue-500 my-4 mx-2 w-fit">
+        <a class="text-blue-600 text-lg " href="/sessions/<%=data[i].id%>">
+            <% const date=new Date(data[i].date); %>
+                <% const formattedDate=date.toLocaleString('en-US', { month: 'short' , day: 'numeric' ,
+                    year: '2-digit' , hour: 'numeric' , minute: 'numeric' , hour12: true }); %>
+                    <%= formattedDate %>
+        </a>
+    
+        <P class="inline mx-4 italic text-gray-500"><% if (data[i].needed  === 1) {%>
+            <p class="text-red-300 inline italic">
+                last shot 
+            </p> 
+            <% } else { %>
+                <%= data[i].needed %>
+                shots 
+                <% } %></P>
+            </P>
+    </div>
+      <% } %>

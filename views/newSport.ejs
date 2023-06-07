@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="csrf-token" content="<%= csrfToken %>">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title><% title %></title>
-</head>
-<body>
- <div class="grid grid-cols-6">
-    <div class="col-start-3 col-span-3 bg-gray-200 p-4 border border-gray-300 rounded-md">
+<%- include("header.ejs",{title}) %>
         <h1 class="text-2xl text-blue-400">Create new sport</h1>
         <ul>
             <% if(messages && messages.error && messages.error.length > 0)  { %>
@@ -25,7 +13,4 @@
             <input class="w-full rounded border-2 text-sm p-2" type="text" placeholder="Sports Name" name="Sports">
             <button type="submit" class="w-15 rounded border-2 text-sm bg-blue-400 text-white px-4 py-2 my-3">SUBMIT</button>
         </form>
-    </div>
- </div>   
-</body>
-</html>
+<%- include("footer.ejs") %>  

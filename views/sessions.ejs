@@ -36,8 +36,17 @@
             <h1 class="text-blue-600 text-2xl underline">
                 <%= sportName %> session #<%= sessionId %>
             </h1>
+            <% const date = new Date(details.date) 
+             const formattedDate = date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: '2-digit',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+              });%>
             <p class="text-blue-600 text-lg">
-                This session is scheduled for <%= details.date %>. to be played at "<%= details.address %>"
+                This session is scheduled for <%=formattedDate  %>. to be played at "<%= details.address %>"
                         <% player_list=details.player.split(',').map((memb)=> memb.trim()) %>
             </p>
             <ul class="list-none grid grid-cols-3 gap-4">
