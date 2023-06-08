@@ -13,7 +13,16 @@ module.exports = {
         table: "Users",
         field: "id",
       },
-    });/**
+    });
+      await queryInterface.addColumn("sessions", "status", {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: "onboard"
+      })
+      await queryInterface.addColumn('sessions', 'reason', {
+        type: Sequelize.STRING,
+      })
+    /**
      * Add altering commands here.
      *
      * Example:
@@ -23,6 +32,9 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.removeColumn("sessions", "userId");
+    await queryInterface.removeColumn("sessions", "status");
+    await queryInterface.removeColumn("sessions", "reason");
+
     /**
      * Add reverting commands here.
      *

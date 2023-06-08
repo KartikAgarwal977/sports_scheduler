@@ -21,7 +21,7 @@ let id;
 describe("Sports Schedular Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(4000, () => { });
+    server = app.listen(4000, () => {});
     agent = request.agent(server);
   });
 
@@ -93,6 +93,12 @@ describe("Sports Schedular Application", function () {
       Sports: "Football",
     });
     expect(res.statusCode).toBe(302);
+    const createdTest = await sports.findOne({
+      where: { sports_name: "Football" },
+    });
+    id = createdTest.id; // Assuming the ID property is named 'id'
+    res = await agent.get(`/sports/${id}`);
+    expect(res.statusCode).toBe(200);
     await agent.get("/sigout");
   });
 
@@ -106,10 +112,51 @@ describe("Sports Schedular Application", function () {
     await agent.get("/sigout");
   });
 
-  test("Admin add sports", async () => {
+  test("Player can access sports", async () => {
+    const agent = request.agent(server);
+    await login(agent, "player@gmail.com", "12345678");
+    let res = await agent.get(`/sports/${id}`);
+    expect(res.statusCode).toBe(200);
+    await agent.get("/sigout");
+  });
+  test("Admin edit sport", async () => {
     const agent = request.agent(server);
     await login(agent, "admin@gmail.com", "12345678");
-    res = await agent.get("/sports/new_sport");
+    let res = await agent.get(`/sports/${id}`);
+    expect(res.statusCode).toBe(200);
+    res = await agent.get(`/sports/${id}/edit`);
+    let csrfToken = extractCsrfToken(res);
+    expect(res.statusCode).toBe(200);
+    res = await agent.post(`/sports/${id}/edit`).send({
+      _csrf: csrfToken,
+      EditSport: "backetball",
+    });
+    expect(res.statusCode).toBe(302);
+    const updated = await sports.findOne({
+      where: { id: id },
+    });
+    expect(updated.sports_name).toBe("backetball");
+  });
+  
+  test("Player try to edit sport", async () => {
+    const agent = request.agent(server);
+    await login(agent, "player@gmail.com", "12345678");
+    let res = await agent.get(`/sports/${id}`);
+    expect(res.statusCode).toBe(200);
+    res = await agent.get(`/sports/${id}/edit`);
+    let csrfToken = extractCsrfToken(res);
+    expect(res.statusCode).toBe(401);
+    res = await agent.post(`/sports/${id}/edit`).send({
+      _csrf: csrfToken,
+      EditSport: "tabletennis",
+    });
+    expect(res.statusCode).toBe(500)
+  });
+
+  test("Admin can delete sport", async () => {
+    const agent = request.agent(server);
+    await login(agent, "admin@gmail.com", "12345678");
+    let res = await agent.get("/sports/new_sport");
     let csrfToken = extractCsrfToken(res);
     expect(res.statusCode).toBe(200);
     res = await agent.post("/new").send({
@@ -120,30 +167,30 @@ describe("Sports Schedular Application", function () {
     const createdTest = await sports.findOne({
       where: { sports_name: "Cricket" },
     });
-    id = createdTest.id; // Assuming the ID property is named 'id'
-    res = await agent.get(`/sports/${id}`);
+    let sportid = createdTest.id; 
+    res = await agent.get(`/sports/${sportid}`);
     expect(res.statusCode).toBe(200);
-    await agent.get("/sigout");
+    res = await agent.get(`/sports/${sportid}/delete`);
+    expect(res.statusCode).toBe(302);
   });
-
-  test("Player can access sports", async () => {
+  test("Player try to delete sport", async () => {
     const agent = request.agent(server);
     await login(agent, "player@gmail.com", "12345678");
     let res = await agent.get(`/sports/${id}`);
     expect(res.statusCode).toBe(200);
-    await agent.get("/sigout");
+    res = await agent.get(`/sports/${id}/delete`);
+    expect(res.statusCode).toBe(401);
   });
-
   test("Admin can create sports session", async () => {
     const agent = request.agent(server);
-    await login(agent, 'admin@gmail.com', '12345678')
-    let res = await agent.get(`/sports/${id}/new_session`)
+    await login(agent, "admin@gmail.com", "12345678");
+    let res = await agent.get(`/sports/${id}/new_session`);
     let csrfToken = extractCsrfToken(res);
     const createdTest = await User.findOne({
       where: { email: "admin@gmail.com" },
     });
     let userid = createdTest.id;
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(200);
     res = await agent.post(`/session`).send({
       _csrf: csrfToken,
       Date: new Date().toISOString(),
@@ -151,20 +198,20 @@ describe("Sports Schedular Application", function () {
       players: "raju,ram,shayam",
       needed_player: 2,
       sport_id: id,
-      userId: userid
-    })
-    expect(res.statusCode).toBe(302)
+      userId: userid,
+    });
+    expect(res.statusCode).toBe(302);
   });
   test("Player can create sports session", async () => {
     const agent = request.agent(server);
-    await login(agent, 'player@gmail.com', '12345678')
-    let res = await agent.get(`/sports/${id}/new_session`)
+    await login(agent, "player@gmail.com", "12345678");
+    let res = await agent.get(`/sports/${id}/new_session`);
     let csrfToken = extractCsrfToken(res);
     const createdTest = await User.findOne({
       where: { email: "player@gmail.com" },
     });
     let userid = createdTest.id;
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(200);
     res = await agent.post(`/session`).send({
       _csrf: csrfToken,
       Date: new Date().toISOString(),
@@ -172,8 +219,8 @@ describe("Sports Schedular Application", function () {
       players: "raju,ram,shayam",
       needed_player: 2,
       sport_id: id,
-      userId: userid
-    })
-    expect(res.statusCode).toBe(302)
+      userId: userid,
+    });
+    expect(res.statusCode).toBe(302);
   });
 });

@@ -291,7 +291,7 @@ app.get(
     const sport_id = req.params.id;
     console.log(`the value of sports id ${req.params.id}`);
     try {
-      res.render("session", {
+      res.render("new_session", {
         title: "New Session",
         csrfToken: req.csrfToken(),
         sport_name,
