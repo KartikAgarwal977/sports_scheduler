@@ -11,6 +11,7 @@ const path = require("path");
 const { format, parseISO } = require('date-fns');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const { formatDate } = require("./helper/formatDate")
 app.use(cookieParser("cookie-parser-secret"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -231,29 +232,41 @@ app.get(
   "/sports/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (req, res) => {
-    const account = await User.findByPk(req.user.id);
-    const role = await account.role;
-    const sport = await sports.findByPk(req.params.id);
-    const upcoming_session = await sessions.upcomingSession(req.params.id)
-    const sport_name = sport.sports_name;
-    res.render("sport", {
-      title: sport_name,
-      role,
-      sportId: req.params.id,
-      upcoming_session
-    });
-  }
+    try {
+      const account = await User.findByPk(req.user.id);
+      const role = await account.role;
+      const sport = await sports.findByPk(req.params.id);
+      const upcoming_session = await sessions.upcomingSession(req.params.id)
+      const sport_name = sport.sports_name;
+      res.render("sport", {
+        title: sport_name,
+        role,
+        sportId: req.params.id,
+        upcoming_session,
+        csrfToken: req.csrfToken()
+      });
+    }
+    catch (err) {
+      console.error(err)
+  }}
 );
 app.get(
-  "/sports/:id/edit",
+  "/sports/:sportId/edit",
   connectEnsureLogin.ensureLoggedIn(),
   requirePublisher,
   async (req, res) => {
-    res.render("sportedit", {
-      title: "sport edit",
-      csrfToken: req.csrfToken(),
-      sportId: req.params.id,
-    });
+    try {
+      const sport = await sports.findByPk(req.params.sportId)
+      res.render("sportedit", {
+        title: "sport edit",
+        csrfToken: req.csrfToken(),
+        sportId: req.params.sportId,
+        sportName: sport.sports_name
+      });
+    }
+    catch (error) {
+      console.error(error)
+    }
   }
 );
 app.post(
@@ -269,7 +282,7 @@ app.post(
     }
   }
 );
-app.get(
+app.post(
   "/sports/:id/delete",
   connectEnsureLogin.ensureLoggedIn(),
   requirePublisher,
@@ -321,8 +334,6 @@ app.post('/session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
     return res.redirect(`/sports/${req.body.sport_id}/new_session`);
   }
   try {
-    var Sessiondate = parseISO(req.body.Date);
-    Sessiondate = format(Sessiondate, "dddd, mmmm dS, yyyy, h:MM:ss TT");
     const session = await sessions.addsession({
       date: req.body.Date,
       address: req.body.address,
@@ -363,18 +374,76 @@ app.post('/session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
       const sport_name = sport.sports_name;
       console.log(sport_name);
       const details = await sessions.getsession(req.params.id);
+      const formattedDate = formatDate(details.date);
       try {
         res.render("sessions", {
           title: "sessions",
           csrfToken: req.csrfToken(),
           sportName: sport_name,
           sessionId: req.params.id,
+          userId: req.user.id,
           details,
+          formattedDate
         });
       } catch (error) {
         console.log(error);
       }
     });
+app.get("/sessions/:sessionId/cancelSession", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const session = await sessions.findByPk(req.params.sessionId)
+    if (session.userId === req.user.id && session.status === 'onboard') {
+      res.render("cancelSession", {
+        title: "cancel session",
+        csrfToken: req.csrfToken(),
+        sessionId: req.params.sessionId,
+        })
+    }
+    else {
+      res.status(401).send( "Unauthorized user.");
+    }
+  }
+  catch (error) {
+    console.error(error)
+    res.status(500).send("An error occurred");
+  }
+})
+app.post('/sessions/:sessionId/cancelSession',connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const sessionId = req.params.sessionId
+    const reason = req.body.cancelreason
+    const session = await sessions.findByPk(sessionId)
+    await sessions.cancelSession(sessionId, reason)
+    res.redirect(`/sports/${session.sportId}`)   
+  }
+  catch (error) {
+    console.error(error)
+    res.status(500).send("An error occurred");
+  }
+})
+app.post('/sessions/:session/joinsession', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const sessionId = req.params.session;
+    const session = await sessions.findByPk(sessionId);
+    const user = await User.findByPk(req.user.id);
 
-
+    if (session.status === "onboard") {
+      if (session.date >= new Date()) {
+        console.log(user.userName)
+        await sessions.joinSession(sessionId, user.userName)
+        // Redirect or send response as needed
+        res.redirect(`/sessions/${session.id}`);
+      } else {
+        console.error("Unable to join previous sessions");
+        res.status(400).send("Unable to join previous sessions");
+      }
+    } else {
+      console.error("Cancelled sessions cannot be joined");
+      res.status(400).send("Cancelled sessions cannot be joined");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
+});
 module.exports = app;

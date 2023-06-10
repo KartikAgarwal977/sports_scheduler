@@ -1,0 +1,6 @@
+<form action="<%= postAddress %>" method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label><%= label %></label>
+    <input class="w-full rounded border-2 text-sm p-2" type="text" placeholder="<%= Name %>" name="<%= Name %>" value="<%= value %>">
+    <button type="submit" class="w-15 rounded border-2 text-sm bg-blue-400 text-white px-4 py-2 my-3">SUBMIT</button>
+</form>

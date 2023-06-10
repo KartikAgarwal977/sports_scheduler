@@ -1,0 +1,6 @@
+<%
+  let date = new Date(data.date);
+  let formattedDate = date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: '2-digit', hour: 'numeric', minute: 'numeric', hour12: true });
+%>
+
+<%= formattedDate %>

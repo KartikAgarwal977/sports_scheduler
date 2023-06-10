@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
     }
+
     static addsession({ date, address, player, needed, sportId, userId }) {
       return this.create({
         date: date,
@@ -25,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         needed: needed,
         sportId: sportId,
         userId: userId,
+        reason: "",
+        status: "onboard"
       });
     }
     static getsession(id) {
@@ -44,16 +47,40 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-    static previousSession(id) {
+    static previousSession(sport_id) {
       return this.findAll({
         where: {
           date: {
             [Op.lt]: new Date(),
           },
-          sportId: id,
+          sportId: sport_id,
         }
       })
     }
+    static cancelSession(session_id,reason) {
+      return this.update({
+        status: 'cancelled',
+        reason 
+      },
+        {
+          where: {
+            id: session_id,
+            status: 'onboard'
+          }
+          })
+    }
+    static joinSession(sessionId, userName) {
+      return this.findByPk(sessionId)
+        .then((session) => {
+          if (session.player === "") {
+            session.player = userName;
+          } else {
+            session.player += `,${userName}`;
+          }
+          return session.save();
+        })
+    }
+    
   }
   sessions.init(
     {
@@ -62,6 +89,8 @@ module.exports = (sequelize, DataTypes) => {
       player: DataTypes.STRING,
       needed: DataTypes.INTEGER,
       sportId: DataTypes.INTEGER,
+      status: DataTypes.STRING,
+      reason: DataTypes.STRING
     },
     {
       sequelize,

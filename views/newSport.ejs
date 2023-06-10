@@ -1,16 +1,6 @@
 <%- include("header.ejs",{title}) %>
         <h1 class="text-2xl text-blue-400">Create new sport</h1>
-        <ul>
-            <% if(messages && messages.error && messages.error.length > 0)  { %>
-                <% for(var i=0; i<messages.error.length; i++) { %>
-                        <li class="bg-red-400 border-red-800 rounded px-4 py-2"> <%= messages.error[i] %></li>
-                <% } %>
-              <% } %>
-        </ul>
-        <form action="/new" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <label>What is the sports name</label>
-            <input class="w-full rounded border-2 text-sm p-2" type="text" placeholder="Sports Name" name="Sports">
-            <button type="submit" class="w-15 rounded border-2 text-sm bg-blue-400 text-white px-4 py-2 my-3">SUBMIT</button>
-        </form>
+        <%- include("errorNotification.ejs",{messages})  %>
+        <%- include("nameform.ejs",{postAddress: "/new", Name : "Sports", csrfToken, value: "",label:"What is the sports name"}) %>
+        
 <%- include("footer.ejs") %>  

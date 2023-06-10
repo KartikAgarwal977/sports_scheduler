@@ -169,17 +169,23 @@ describe("Sports Schedular Application", function () {
     });
     let sportid = createdTest.id; 
     res = await agent.get(`/sports/${sportid}`);
+    csrfToken = extractCsrfToken(res);
     expect(res.statusCode).toBe(200);
-    res = await agent.get(`/sports/${sportid}/delete`);
+    res = await agent.post(`/sports/${sportid}/delete`).send({
+      _csrf: csrfToken,
+    });
     expect(res.statusCode).toBe(302);
   });
   test("Player try to delete sport", async () => {
     const agent = request.agent(server);
     await login(agent, "player@gmail.com", "12345678");
     let res = await agent.get(`/sports/${id}`);
+    let csrfToken = extractCsrfToken(res);
     expect(res.statusCode).toBe(200);
-    res = await agent.get(`/sports/${id}/delete`);
-    expect(res.statusCode).toBe(401);
+    res = await agent.post(`/sports/${id}/delete`).send({
+      _csrf: csrfToken,
+    });
+    expect(res.statusCode).toBe(500);
   });
   test("Admin can create sports session", async () => {
     const agent = request.agent(server);

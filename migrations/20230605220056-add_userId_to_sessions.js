@@ -14,14 +14,6 @@ module.exports = {
         field: "id",
       },
     });
-      await queryInterface.addColumn("sessions", "status", {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: "onboard"
-      })
-      await queryInterface.addColumn('sessions', 'reason', {
-        type: Sequelize.STRING,
-      })
     /**
      * Add altering commands here.
      *

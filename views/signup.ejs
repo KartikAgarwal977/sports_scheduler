@@ -1,4 +1,4 @@
-<%- include("header.ejs",{title}) %>
+<%- include("header.ejs",{title,csrfToken}) %>
     <h6 class="py-4">Signup as a new user</h6>
     <%- include("errorNotification.ejs",{messages}) %>
         <form action="/users" method="post">

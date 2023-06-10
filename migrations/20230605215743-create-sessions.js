@@ -24,6 +24,13 @@ module.exports = {
       sportId: {
         type: Sequelize.INTEGER
       },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      reason: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

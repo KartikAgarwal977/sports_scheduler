@@ -1,4 +1,4 @@
-<%- include("header.ejs",{title}) %>
+<%- include("header.ejs",{title,csrfToken}) %>
     <h1 class="text-xl text-blue-500"> Upcoming sessions</h1>
     <br>
 
@@ -10,8 +10,11 @@
         <% if (role==='admin' ) { %>
             <div class="col-start-6 col-span-2 py-5">
                 <div class="grid-rows-6 row-start-2">
-                    <a href="/sports/<%= sportId %>/edit" class="text-xl hover:hover:text-green-800">edit</a><br>
-                    <a href="/sports/<%= sportId %>/delete" class="text-xl hover:hover:text-green-800">delete</a>
+                    <a href="/sports/<%= sportId %>/edit" class="rounded-2xl text-white text-white m-3 px-4 py-2 text-xl hover:hover:text-green-800 bg-blue-500">Edit</a><br>
+                    <form action="/sports/<%=sportId %>/delete" method="post">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="text-white rounded-2xl m-3 px-4 py-2 text-xl hover:hover:bg-green-500 bg-blue-500" type="submit" >Delete</button>                
+                    </form>
                 </div>
             </div>
             <% } %>
