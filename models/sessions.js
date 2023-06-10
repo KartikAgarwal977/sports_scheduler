@@ -11,8 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       sessions.belongsTo(models.sports, {
         foreignKey: "sportId",
       });
-    }
-    static associate(models) {
+    
       sessions.belongsTo(models.User, {
         foreignKey: "userId",
       });
