@@ -39,6 +39,7 @@ app.use(function (request, response, next) {
 });
 
 app.set("view engine", "ejs");
+// eslint-disable-next-line no-undef
 app.set("views", path.join(__dirname, "views"));
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -247,7 +248,8 @@ app.get(
     }
     catch (err) {
       console.error(err)
-  }}
+    }
+  }
 );
 app.get(
   "/sports/:sportId/edit",
@@ -346,48 +348,50 @@ app.post('/session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  });
-  app.get('/sports/:sportId/previous_sessions', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-    const sport = await sports.findByPk(req.params.sportId)
-    const sportName = sport.sports_name 
-    const previous_sessions = await sessions.previousSession(req.params.sportId)
+});
+app.get('/sports/:sportId/previous_sessions', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  const sport = await sports.findByPk(req.params.sportId)
+  const sportName = sport.sports_name
+  const previous_sessions = await sessions.previousSession(req.params.sportId)
+  try {
+    res.render("previousSessions", {
+      title: "Previous Sessions",
+      csrfToken: req.csrfToken(),
+      sportName,
+      previous_sessions
+    })
+  }
+  catch (error) {
+    console.error(error)
+  }
+})
+app.get(
+  "/sessions/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (req, res) => {
+    const session = await sessions.findByPk(req.params.id);
+    const sportid = session.sportId;
+    const sport = await sports.findByPk(sportid);
+    const sport_name = sport.sports_name;
+    console.log(sport_name);
+    const details = await sessions.getsession(req.params.id);
+    const formattedDate = formatDate(details.date);
+    const user = await User.findByPk(req.user.id);
     try {
-      res.render("previousSessions", {
-        title: "Previous Sessions",
+      res.render("sessions", {
+        title: "sessions",
         csrfToken: req.csrfToken(),
-        sportName,
-        previous_sessions
-      })
+        sportName: sport_name,
+        sessionId: req.params.id,
+        userId: req.user.id,
+        details,
+        formattedDate,
+        joinedSession: user.sessionId
+      });
+    } catch (error) {
+      console.log(error);
     }
-    catch (error) {
-      console.error(error)
-    }
-  })
-  app.get(
-    "/sessions/:id",
-    connectEnsureLogin.ensureLoggedIn(),
-    async (req, res) => {
-      const session = await sessions.findByPk(req.params.id);
-      const sportid = session.sportId;
-      const sport = await sports.findByPk(sportid);
-      const sport_name = sport.sports_name;
-      console.log(sport_name);
-      const details = await sessions.getsession(req.params.id);
-      const formattedDate = formatDate(details.date);
-      try {
-        res.render("sessions", {
-          title: "sessions",
-          csrfToken: req.csrfToken(),
-          sportName: sport_name,
-          sessionId: req.params.id,
-          userId: req.user.id,
-          details,
-          formattedDate
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    });
+  });
 app.get("/sessions/:sessionId/cancelSession", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   try {
     const session = await sessions.findByPk(req.params.sessionId)
@@ -396,10 +400,10 @@ app.get("/sessions/:sessionId/cancelSession", connectEnsureLogin.ensureLoggedIn(
         title: "cancel session",
         csrfToken: req.csrfToken(),
         sessionId: req.params.sessionId,
-        })
+      })
     }
     else {
-      res.status(401).send( "Unauthorized user.");
+      res.status(401).send("Unauthorized user.");
     }
   }
   catch (error) {
@@ -407,14 +411,25 @@ app.get("/sessions/:sessionId/cancelSession", connectEnsureLogin.ensureLoggedIn(
     res.status(500).send("An error occurred");
   }
 })
-app.post('/sessions/:sessionId/cancelSession',connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+app.post('/sessions/:sessionId/cancelSession', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   try {
     const sessionId = req.params.sessionId
     const reason = req.body.cancelreason
     const session = await sessions.findByPk(sessionId)
-    await sessions.cancelSession(sessionId, reason)
-    res.redirect(`/sports/${session.sportId}`)   
-  }
+    if (session.status === "onboard") {
+      if (session.date >= new Date()) {
+        await sessions.cancelSession(sessionId, reason)
+        res.redirect(`/sports/${session.sportId}`)
+      }
+      else {
+        console.error("Unable to cancelled previous sessions");
+        res.status(400).send("Unable to cancelled previous sessions");
+      }
+    } else {
+      console.error("Cancelled sessions cannot be cancelled");
+      res.status(400).send("Cancelled sessions cannot be cancelled");
+    }
+  }    
   catch (error) {
     console.error(error)
     res.status(500).send("An error occurred");
@@ -428,10 +443,15 @@ app.post('/sessions/:session/joinsession', connectEnsureLogin.ensureLoggedIn(), 
 
     if (session.status === "onboard") {
       if (session.date >= new Date()) {
-        console.log(user.userName)
-        await sessions.joinSession(sessionId, user.userName)
-        // Redirect or send response as needed
-        res.redirect(`/sessions/${session.id}`);
+        if (session.needed >= 1) {
+          console.log(user.userName)
+          await sessions.joinSession(sessionId, user.userName)
+          await User.addSessionId(user.id, sessionId)
+          res.redirect(`/sessions/${session.id}`);
+        } else {
+          console.error("The Session is full")
+          res.status(400).send("The Session is full")
+        }
       } else {
         console.error("Unable to join previous sessions");
         res.status(400).send("Unable to join previous sessions");
@@ -445,4 +465,34 @@ app.post('/sessions/:session/joinsession', connectEnsureLogin.ensureLoggedIn(), 
     res.status(500).send("An error occurred");
   }
 });
+app.post('/sessions/:sessionId/leaveSession', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+  try {
+    const sessionId = req.params.sessionId;
+    const session = await sessions.findByPk(sessionId);
+    const user = await User.findByPk(req.user.id);
+    const userJoinedSession = user.sessionId.split(',').map((id) => id.trim());
+    if (session.status === "onboard") {
+      if (session.date >= new Date()) {
+        if (userJoinedSession.includes(sessionId)) {
+          console.log(user.userName)
+          await sessions.leaveSession(sessionId, user.userName)
+          await User.removeSessionId(user.id, sessionId)
+          res.redirect(`/sessions/${session.id}`);
+        } else {
+          console.error("leave before join not possible")
+          res.status(400).send("leave before join not possible")
+        }
+      } else {
+        console.error("Unable to leave previous sessions");
+        res.status(400).send("Unable to leave previous sessions");
+      }
+    } else {
+      console.error("Cancelled sessions cannot be leave");
+      res.status(400).send("Cancelled sessions cannot be leave");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
+})
 module.exports = app;

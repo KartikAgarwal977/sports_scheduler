@@ -76,9 +76,26 @@ module.exports = (sequelize, DataTypes) => {
           } else {
             session.player += `,${userName}`;
           }
+          if (session.needed >= 1) {
+            session.needed -= 1
+          }
           return session.save();
         })
     }
+    static leaveSession(sessionId, playerName) {
+      return this.findByPk(sessionId)
+      .then((session) => {
+        const Players = session.player.split(',').map((player) => player.trim());
+        const index = Players.indexOf(playerName.trim());
+        if (index > 0) {
+          Players.splice(index, 1);
+          const updatedPlayers = Players
+          console.log(updatedPlayers.toString())
+          session.update({ player: updatedPlayers.toString() });
+        }
+        return session.save()
+        })  
+   }
     
   }
   sessions.init(

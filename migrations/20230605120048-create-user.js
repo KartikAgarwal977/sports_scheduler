@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -22,6 +23,9 @@ module.exports = {
         allowNull: false
       },
       role: {
+        type: Sequelize.STRING
+      },
+      sessionId: {
         type: Sequelize.STRING
       },
       createdAt: {

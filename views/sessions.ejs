@@ -1,16 +1,16 @@
 <%- include("header.ejs",{title,csrfToken}) %>
 
-        <% if (details.status === 'cancelled'){ %>
+    <% if (details.status==='cancelled' ){ %>
         <div class="text-2xl border-red-300 text-red-500 border-2 bg-red-300 rounded-2xl px-4 py-2">
             <p class="text-gray-500 italic">The session is cancelled</p>
             <%= details.reason %>
         </div>
-<% } %>
+        <% } %>
             <h1 class="text-blue-600 text-2xl underline">
                 <%= sportName %> session #<%= sessionId %>
             </h1>
             <p class="text-blue-600 text-lg">
-                This session is scheduled for <%=formattedDate  %>. to be played at "<%= details.address %>"
+                This session is scheduled for <%=formattedDate %>. to be played at "<%= details.address %>"
                         <% player_list=details.player.split(',').map((memb)=> memb.trim()) %>
             </p>
             <ul class="list-none grid grid-cols-3 gap-4">
@@ -20,14 +20,28 @@
                     </li>
                     <% } %>
             </ul>
-            <% if (details.userId === userId && details.status === 'onboard'){ %>
-            <a href='/sessions/<%= sessionId %>/cancelSession'>Cancel Session</a>
-            <% if (details.date >= new Date()){ %>
-                <form action="/sessions/<%= sessionId %>/joinsession" method="post">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button type="submit" >join session </button>  
-                </form>
+            <% if (joinedSession === '' || joinedSession === null) {%>
+            <%    joinsession = '' %>
+            <% } else { %>
+            <% joinsession=joinedSession.split(',').map((id)=> id.trim()) %>
             <% } %>
-            <% } %>
-            
-<%- include("footer.ejs") %>  
+                <% if (details.userId===userId && details.status==='onboard' ){ %>
+                    <% if (details.date>= new Date()){ %>
+                        <a href='/sessions/<%= sessionId %>/cancelSession'>Cancel Session</a>
+                        <% } %>
+                            <% } %>
+                                <% if (details.status==='onboard' ){ %>
+                                    <% if(!joinsession.includes(sessionId)){ %>
+                                        <form action="/sessions/<%= sessionId %>/joinsession" method="post">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <button type="submit">join session </button>
+                                        </form>
+                                        <% } else { %>
+                                            <form action="/sessions/<%= sessionId %>/leaveSession" method="post">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                <button type="submit">leave session </button>
+                                            </form>
+                                            <% } %>
+                                                <% } %>
+
+                                                    <%- include("footer.ejs") %>
