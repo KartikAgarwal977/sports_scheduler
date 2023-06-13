@@ -1,4 +1,5 @@
-'use strict';
+/* eslint-disable no-unused-vars */
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -20,7 +21,6 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    
   },
 
   async down(queryInterface, Sequelize) {
@@ -31,5 +31,5 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };

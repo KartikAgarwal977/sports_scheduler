@@ -1,12 +1,11 @@
 /* eslint-disable no-unused-vars */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.addColumn("sessions", "userId", {
       type: Sequelize.DataTypes.INTEGER,
-      
     });
     await queryInterface.addConstraint("sessions", {
       fields: ["userId"],
@@ -32,5 +31,5 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };
