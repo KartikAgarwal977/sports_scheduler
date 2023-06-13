@@ -21,19 +21,20 @@
 
 ## ScreenShot
 #### index page
-![index page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/9c057a96-8f72-4f36-b37c-f254121ae4c2)
+![index_page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/7c7763c6-d099-4779-a0e3-1bc907d2ae4b)
 #### Signup page
-![Signup page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/700cbb07-582d-4a2d-89de-cc6a01953e25)
+![Signup page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/c7671a26-68d7-4ed2-94b4-c7f4eb40c3da)
 #### Login page
-![Login page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/db6d7abb-0ea1-4f73-8c04-f47d095ed298)
+![Login page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/5b4a0702-2fbf-44e2-b7d5-1eef4cce1485)
 #### Home page as Admin 
-![Home page as Admin](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/8c8f53a4-f618-477a-a84d-1382bbf9b252)
+![Home page as Admin](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/9f0643c4-c96f-4e27-872e-34165a15e717)
 #### Home page as Player
-![Home page as Player](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/dcafc82b-dc41-4e72-9b6a-5472845f95f1)
+![Home page as Player](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/338c463a-f66e-438c-9a05-41fc49e82566)
 #### Sport page
-![Sport page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/0cfdf4f6-bd72-4b13-8178-41c088d164b7)
+![Sport page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/9d302288-5027-4efd-889a-80c6d8b20268)
 #### Sport session form
-![Sport session form](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/fcf7d3c1-5455-472b-b007-466ef515ace4)
+![Sport session form](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/5b106755-5fd5-48c4-932f-c50a90f3446e)
 #### Sport session page
-![Sport session page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/deaff2b3-a0cf-4eae-acb4-f2ce65b24915)
+![Sport session page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/eadf4c30-861e-45b9-8eb9-9acfab35b286)
+
 
