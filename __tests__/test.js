@@ -280,4 +280,62 @@ describe("Sports Schedular Application", function () {
     });
     expect(res.statusCode).toBe(302);
   });
+  test("Admin Join session", async () => {
+    const agent = request.agent(server);
+    await login(agent, "admin@gmail.com", "12345678");
+
+    // Find the session based on specific criteria
+    const session = await sessions.findOne({
+      where: {
+        status: "onboard",
+        date: { [db.Sequelize.Op.gte]: new Date() },
+        needed: { [db.Sequelize.Op.gte]: 1 },
+      },
+      order: [["date", "ASC"]],
+    });
+
+    if (session) {
+      const session_id = session.id;
+      console.log(session_id);
+
+      try {
+        let res = await agent.post(`/session/${session_id}/joinsession`);
+        expect(res.statusCode).toBe(200);
+      } catch (error) {
+        console.error("Error joining session:", error);
+        throw error;
+      }
+    } else {
+      console.error("No eligible sessions found");
+    }
+  });
+  test("Player can Join session", async () => {
+    const agent = request.agent(server);
+    await login(agent, "player@gmail.com", "12345678");
+
+    // Find the session based on specific criteria
+    const session = await sessions.findOne({
+      where: {
+        status: "onboard",
+        date: { [db.Sequelize.Op.gte]: new Date() },
+        needed: { [db.Sequelize.Op.gte]: 1 },
+      },
+      order: [["date", "ASC"]],
+    });
+
+    if (session) {
+      const session_id = session.id;
+      console.log(session_id);
+
+      try {
+        let res = await agent.post(`/session/${session_id}/joinsession`);
+        expect(res.statusCode).toBe(200);
+      } catch (error) {
+        console.error("Error joining session:", error);
+        throw error;
+      }
+    } else {
+      console.error("No eligible sessions found");
+    }
+  });
 });

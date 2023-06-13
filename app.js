@@ -461,7 +461,7 @@ app.post(
   }
 );
 async function hasJoinedSessionWithDate(user, Session) {
-  if (user.sessionId == "") {
+  if (user.sessionId == "" || user.sessionId == null) {
     return true;
   }
   const sessionIds = user.sessionId.split(",").map((id) => id.trim());
