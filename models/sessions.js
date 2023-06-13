@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       sessions.belongsTo(models.sports, {
         foreignKey: "sportId",
-        onDelete: 'CASCADE',
+        onDelete: "CASCADE",
       });
-    
+
       sessions.belongsTo(models.User, {
         foreignKey: "userId",
-        onDelete: 'CASCADE',
+        onDelete: "CASCADE",
       });
     }
 
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         sportId: sportId,
         userId: userId,
         reason: "",
-        status: "onboard"
+        status: "onboard",
       });
     }
     static getsession(id) {
@@ -55,58 +55,60 @@ module.exports = (sequelize, DataTypes) => {
             [Op.lt]: new Date(),
           },
           sportId: sport_id,
-        }
-      })
+        },
+      });
     }
-    static cancelSession(session_id,reason) {
-      return this.update({
-        status: 'cancelled',
-        reason 
-      },
+    static cancelSession(session_id, reason) {
+      return this.update(
+        {
+          status: "cancelled",
+          reason,
+        },
         {
           where: {
             id: session_id,
-            status: 'onboard'
-          }
-          })
+            status: "onboard",
+          },
+        }
+      );
     }
     static joinSession(sessionId, userName) {
-      return this.findByPk(sessionId)
-        .then((session) => {
-          if (session.player === "") {
-            session.player = userName;
-          } else {
-            session.player += `,${userName}`;
-          }
-          if (session.needed >= 1) {
-            session.needed -= 1
-          }
-          return session.save();
-        })
+      return this.findByPk(sessionId).then((session) => {
+        if (session.player === "") {
+          session.player = userName;
+        } else {
+          session.player += `,${userName}`;
+        }
+        if (session.needed >= 1) {
+          session.needed -= 1;
+        }
+        return session.save();
+      });
     }
     static leaveSession(sessionId, playerName) {
-      return this.findByPk(sessionId)
-      .then((session) => {
-        const Players = session.player.split(',').map((player) => player.trim());
+      return this.findByPk(sessionId).then((session) => {
+        const Players = session.player
+          .split(",")
+          .map((player) => player.trim());
         const index = Players.indexOf(playerName.trim());
         if (index > 0) {
           Players.splice(index, 1);
-          const updatedPlayers = Players
-          console.log(updatedPlayers.toString())
+          const updatedPlayers = Players;
+          console.log(updatedPlayers.toString());
           session.update({ player: updatedPlayers.toString() });
         }
-        return session.save()
-        })  
+        return session.save();
+      });
     }
-    
+
     static displayjoinedSession(session_ids) {
       if (!session_ids || session_ids.length === 0) {
         return Promise.resolve([]); // Return an empty array if session_ids is null or empty
       }
       const idsArray = session_ids
-    .split(',')
-    .map((id) => parseInt(id.trim()))
-    .filter((id) => !isNaN(id)); // Filter out NaN values
+        .split(",")
+        .map((id) => parseInt(id.trim()))
+        .filter((id) => !isNaN(id)); // Filter out NaN values
       return this.findAll({
         where: {
           id: {
@@ -123,8 +125,8 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll({
         where: {
           sportId: id,
-        }
-      })
+        },
+      });
     }
 
     static deleteSession(idsArray) {
@@ -133,8 +135,8 @@ module.exports = (sequelize, DataTypes) => {
           sportId: {
             [Op.in]: idsArray,
           },
-          }
-      })
+        },
+      });
     }
   }
   sessions.init(
@@ -145,7 +147,7 @@ module.exports = (sequelize, DataTypes) => {
       needed: DataTypes.INTEGER,
       sportId: DataTypes.INTEGER,
       status: DataTypes.STRING,
-      reason: DataTypes.STRING
+      reason: DataTypes.STRING,
     },
     {
       sequelize,

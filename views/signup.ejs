@@ -1,40 +1,69 @@
 <%- include("header.ejs",{title,csrfToken}) %>
-    <h6 class="py-4">Signup as a new user</h6>
-    <%- include("errorNotification.ejs",{messages}) %>
-        <form action="/users" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <div class="block mx-3 px-4 gap-2">
-                <div class="block-auto my-3">
-                    <label class="text-sm">Name</label>
-                    <input class="rounded border-2 text-sm p-2 w-full" type="text" name="userName" placeholder="Name">
-                </div>
+<h6 class="py-4">Signup as a new user</h6>
+<%- include("errorNotification.ejs",{messages}) %>
+<form action="/users" method="post">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <div class="block mx-3 px-4 gap-2">
+    <div class="block-auto my-3">
+      <label class="text-sm">Name</label>
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="text"
+        name="userName"
+        placeholder="Name"
+      />
+    </div>
 
-                <div class="block-auto my-3">
-                    <label class="text-sm">Email</label>
-                    <input class="rounded border-2 text-sm p-2 w-full" type="email" name="email" placeholder="Email">
-                </div>
-                <div class="block-auto my-3">
-                    <label class="text-sm">Password</label>
-                    <input class="rounded border-2 text-sm p-2 w-full" type="password" name="password"
-                        placeholder="password">
-                </div>
-                <div class="flex w-fit items-center px-2 py-1  my-2">
-                    <div class="m-3 w-full rounded hover:bg-blue-100">
-                        <label class="text-sm font-semibold" for="admin">Admin</label>
-                        <input class="rounded border-2 text-sm p-2 w-full" name="role" type="radio" id="admin"
-                            value="admin">
-                    </div>
-                    <div class="m-3 w-full rounded hover:bg-blue-100">
-                        <label class="text-sm font-semibold" for="player">Player</label>
-                        <input class="rounded border-2 text-sm p-2 w-full" name="role" type="radio" id="player" checked
-                            value="player">
-                    </div>
-                </div>
-                <div class="block-auto w-15 h-10 px-4 my-3">
-                    <button class="rounded px-4 my-3 bg-blue-500 text-white border-2 p-2 hover:bg-green-800"
-                        type="submit">Sign Up</button>
-                </div>
-            </div>
-        </form>
-        <a href="/login" class="text-blue-500 my-3 mx-8">Already have an account</a>
+    <div class="block-auto my-3">
+      <label class="text-sm">Email</label>
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="email"
+        name="email"
+        placeholder="Email"
+      />
+    </div>
+    <div class="block-auto my-3">
+      <label class="text-sm">Password</label>
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="password"
+        name="password"
+        placeholder="password"
+      />
+    </div>
+    <div class="flex w-fit items-center px-2 py-1 my-2">
+      <div class="m-3 w-full rounded hover:bg-blue-100">
+        <label class="text-sm font-semibold" for="admin">Admin</label>
+        <input
+          class="rounded border-2 text-sm p-2 w-full"
+          name="role"
+          type="radio"
+          id="admin"
+          value="admin"
+        />
+      </div>
+      <div class="m-3 w-full rounded hover:bg-blue-100">
+        <label class="text-sm font-semibold" for="player">Player</label>
+        <input
+          class="rounded border-2 text-sm p-2 w-full"
+          name="role"
+          type="radio"
+          id="player"
+          checked
+          value="player"
+        />
+      </div>
+    </div>
+    <div class="block-auto w-15 h-10 px-4 my-3">
+      <button
+        class="rounded px-4 my-3 bg-blue-500 text-white border-2 p-2 hover:bg-green-800"
+        type="submit"
+      >
+        Sign Up
+      </button>
+    </div>
+  </div>
+</form>
+<a href="/login" class="text-blue-500 my-3 mx-8">Already have an account</a>
 <%- include("footer.ejs") %>

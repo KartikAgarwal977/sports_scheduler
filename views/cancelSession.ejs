@@ -1,4 +1,5 @@
 <%- include("header.ejs",{title,csrfToken}) %> <%- include("nameform.ejs",
-{Name: 'cancelreason', 
-postAddress:`/sessions/${sessionId}/cancelSession`,csrfToken,value:"", label:"Give the reason of cancelling the session"}) %>
- <%- include("footer.ejs") %>
+{Name: 'cancelreason',
+postAddress:`/sessions/${sessionId}/cancelSession`,csrfToken,value:"",
+label:"Give the reason of cancelling the session"}) %> <%- include("footer.ejs")
+%>

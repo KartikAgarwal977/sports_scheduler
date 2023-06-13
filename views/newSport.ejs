@@ -1,6 +1,5 @@
 <%- include("header.ejs",{title}) %>
-        <h1 class="text-2xl text-blue-400">Create new sport</h1>
-        <%- include("errorNotification.ejs",{messages})  %>
-        <%- include("nameform.ejs",{postAddress: "/new", Name : "Sports", csrfToken, value: "",label:"What is the sports name"}) %>
-        
-<%- include("footer.ejs") %>  
+<h1 class="text-2xl text-blue-400">Create new sport</h1>
+<%- include("errorNotification.ejs",{messages}) %> <%-
+include("nameform.ejs",{postAddress: "/new", Name : "Sports", csrfToken, value:
+"",label:"What is the sports name"}) %> <%- include("footer.ejs") %>

@@ -22,7 +22,7 @@ let id;
 describe("Sports Schedular Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(4000, () => { });
+    server = app.listen(4000, () => {});
     agent = request.agent(server);
   });
 
@@ -138,7 +138,7 @@ describe("Sports Schedular Application", function () {
     });
     expect(updated.sports_name).toBe("backetball");
   });
-  
+
   test("Player try to edit sport", async () => {
     const agent = request.agent(server);
     await login(agent, "player@gmail.com", "12345678");
@@ -151,7 +151,7 @@ describe("Sports Schedular Application", function () {
       _csrf: csrfToken,
       EditSport: "tabletennis",
     });
-    expect(res.statusCode).toBe(500)
+    expect(res.statusCode).toBe(500);
   });
 
   test("Admin can delete sport", async () => {
@@ -234,50 +234,50 @@ describe("Sports Schedular Application", function () {
     });
     expect(res.statusCode).toBe(302);
   });
-  test('Player can cancel there created session with a reason', async () => {
+  test("Player can cancel there created session with a reason", async () => {
     const agent = request.agent(server);
-    await login(agent, "player@gmail.com", "12345678")
+    await login(agent, "player@gmail.com", "12345678");
     const user = await User.findOne({
       where: {
-        email: "player@gmail.com"
-      }
-    })
-    const userid = user.id
+        email: "player@gmail.com",
+      },
+    });
+    const userid = user.id;
     const session = await sessions.findOne({
       where: {
-        userId: userid
-      }
-    })
-    let res = await agent.get(`/sessions/${session.id}/cancelSession`)
+        userId: userid,
+      },
+    });
+    let res = await agent.get(`/sessions/${session.id}/cancelSession`);
     let csrfToken = extractCsrfToken(res);
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(200);
     res = await agent.post(`/sessions/${session.id}/cancelSession`).send({
       cancelreason: "there is an emergency",
       _csrf: csrfToken,
-    })
-    expect(res.statusCode).toBe(302)
-  })
-  test('admin can cancel there created session with a reason', async () => {
+    });
+    expect(res.statusCode).toBe(302);
+  });
+  test("admin can cancel there created session with a reason", async () => {
     const agent = request.agent(server);
-    await login(agent, "admin@gmail.com", "12345678")
+    await login(agent, "admin@gmail.com", "12345678");
     const user = await User.findOne({
       where: {
-        email: "admin@gmail.com"
-      }
-    })
-    const userid = user.id
+        email: "admin@gmail.com",
+      },
+    });
+    const userid = user.id;
     const session = await sessions.findOne({
       where: {
-        userId: userid
-      }
-    })
-    let res = await agent.get(`/sessions/${session.id}/cancelSession`)
+        userId: userid,
+      },
+    });
+    let res = await agent.get(`/sessions/${session.id}/cancelSession`);
     let csrfToken = extractCsrfToken(res);
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(200);
     res = await agent.post(`/sessions/${session.id}/cancelSession`).send({
       cancelreason: "there is an emergency",
       _csrf: csrfToken,
-    })
-    expect(res.statusCode).toBe(302)
-  })
+    });
+    expect(res.statusCode).toBe(302);
+  });
 });

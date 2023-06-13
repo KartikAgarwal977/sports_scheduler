@@ -1,29 +1,58 @@
 <%- include("header.ejs",{title}) %>
-            <h6 class = "py-4 text-4xl text-blue-500 underline font-semibold"><%= `New ${sport_name} Session`  %></h6>
-            <%- include("errorNotification.ejs",{messages})  %>
-            <form action="/session" method="post">
-                <input type="hidden" name="sport_id" value="<%= sport_id %>">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <div class="block mx-3 px-4 gap-2">
-                    <div class="block-auto my-3">
-                        <label class="text-sm">When will this sport session be held?</label>
-                        <input class="rounded border-2 text-sm p-2 w-full" type="datetime-local" name="Date">
-                    </div>
-                    <div class="block-auto my-3">
-                        <label class="text-sm">Where will this session be played?</label>
-                        <input class="rounded border-2 text-sm p-2 w-full" type="text" name="address" placeholder="address">
-                    </div>
-                    <div class="block-auto my-3">
-                        <label class="text-sm">Who all will be joining you in this session? (comma-separated)</label>
-                        <input class="rounded border-2 text-sm p-2 w-full" type="text" name="players" placeholder="Who all will be joining you in this session? (comma-separated)">
-                    </div>
-                    <div class="block-auto my-3">
-                        <label class="text-sm">How many more players do you need?</label>
-                        <input class="rounded border-2 text-sm p-2 w-full" type="number" min="1" name="needed_player" placeholder="How many more players do you need?">
-                    </div>
-                    <div class="block-auto w-15 h-10 px-4 my-3">
-                        <button class="rounded px-4 my-3 bg-blue-500 text-white border-2 p-2 hover:bg-green-800" type="submit">submit</button>
-                    </div>
-                </div>
-            </form>
-<%- include("footer.ejs") %>  
+<h6 class="py-4 text-4xl text-blue-500 underline font-semibold">
+  <%= `New ${sport_name} Session` %>
+</h6>
+<%- include("errorNotification.ejs",{messages}) %>
+<form action="/session" method="post">
+  <input type="hidden" name="sport_id" value="<%= sport_id %>" />
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <div class="block mx-3 px-4 gap-2">
+    <div class="block-auto my-3">
+      <label class="text-sm">When will this sport session be held?</label>
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="datetime-local"
+        name="Date"
+      />
+    </div>
+    <div class="block-auto my-3">
+      <label class="text-sm">Where will this session be played?</label>
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="text"
+        name="address"
+        placeholder="address"
+      />
+    </div>
+    <div class="block-auto my-3">
+      <label class="text-sm"
+        >Who all will be joining you in this session? (comma-separated)</label
+      >
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="text"
+        name="players"
+        placeholder="Who all will be joining you in this session? (comma-separated)"
+      />
+    </div>
+    <div class="block-auto my-3">
+      <label class="text-sm">How many more players do you need?</label>
+      <input
+        class="rounded border-2 text-sm p-2 w-full"
+        type="number"
+        min="1"
+        name="needed_player"
+        placeholder="How many more players do you need?"
+      />
+    </div>
+    <div class="block-auto w-15 h-10 px-4 my-3">
+      <button
+        class="rounded px-4 my-3 bg-blue-500 text-white border-2 p-2 hover:bg-green-800"
+        type="submit"
+      >
+        submit
+      </button>
+    </div>
+  </div>
+</form>
+<%- include("footer.ejs") %>

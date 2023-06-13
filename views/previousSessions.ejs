@@ -1,11 +1,7 @@
 <%- include("header.ejs",{title}) %>
-    <h1 class="text-4xl text-blue-500">
-        <%= sportName %>
-    </h1>
-    <h1 class="text-xl text-blue-500">
-        <%= title %>
-    </h1>
-    <br>
+<h1 class="text-4xl text-blue-500"><%= sportName %></h1>
+<h1 class="text-xl text-blue-500"><%= title %></h1>
+<br />
 
-    <%- include('display_sessions.ejs',{data:previous_sessions}) %>
-        <%- include("footer.ejs") %>
+<%- include('display_sessions.ejs',{data:previous_sessions}) %> <%-
+include("footer.ejs") %>
