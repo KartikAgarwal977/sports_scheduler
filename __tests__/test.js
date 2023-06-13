@@ -338,4 +338,18 @@ describe("Sports Schedular Application", function () {
       console.error("No eligible sessions found");
     }
   });
+  test("changing the password", async () => {
+    const agent = request.agent(server);
+    await login(agent, "player@gmail.com", "12345678");
+    let res = await agent.get("/updatepassword");
+    expect(res.statusCode).toBe(200);
+    let csrfToken = extractCsrfToken(res);
+    res = await agent.post("/updatepassword").send({
+      _csrf: csrfToken,
+      currentPassword: "12345678",
+      updatePassword: "87654321",
+      confirmPassword: "87654321",
+    });
+    expect(res.statusCode).toBe(302);
+  });
 });

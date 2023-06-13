@@ -603,7 +603,6 @@ app.post(
       req.flash("error", "Confirm password doesn't match");
       return res.redirect("/updatepassword");
     }
-    console.log(req.body.updatePassword);
     if (req.body.updatePassword.length < 8) {
       req.flash("error", "Password must be at least 8 characters long");
       return res.redirect("/updatepassword");
