@@ -18,3 +18,12 @@
 3. Can change password
 4. Cancel session with a reason
 5. Can see there joined session separately
+
+## ScreenShot
+![image](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/9c057a96-8f72-4f36-b37c-f254121ae4c2)
+![image](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/700cbb07-582d-4a2d-89de-cc6a01953e25)
+![image](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/db6d7abb-0ea1-4f73-8c04-f47d095ed298)
+![image](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/8c8f53a4-f618-477a-a84d-1382bbf9b252)
+![image](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/dcafc82b-dc41-4e72-9b6a-5472845f95f1)
+![image](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/0cfdf4f6-bd72-4b13-8178-41c088d164b7)
+
