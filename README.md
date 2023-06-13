@@ -19,6 +19,8 @@
 4. Cancel session with a reason
 5. Can see there joined session separately
 
+## Video Explaination :-
+
 ## ScreenShot
 #### index page
 ![index_page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/7c7763c6-d099-4779-a0e3-1bc907d2ae4b)
