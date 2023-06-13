@@ -12,7 +12,10 @@
         <P class="inline mx-4 italic text-gray-500"><% if (data[i].needed  === 1) {%>
             <p class="text-red-300 inline italic">
                 last shot 
-            </p> 
+            </p> <%} else if (data[i].needed == 0) {%>
+            <p class="text-green-300 inline italic">
+                FULL
+            </p>
             <% } else { %>
                 <%= data[i].needed %>
                 shots 

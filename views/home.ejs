@@ -7,10 +7,15 @@
                             <a href="/sports/new_sport" class="text-blue-400 underline hover:text-blue-200">Create a new sport</a>
                         </li>
                         <li>
-                            <a href="/report" class="text-blue-400 underline hover:text-blue-200">view report</a>
+                            <a href="/sports_report" class="text-blue-400 underline hover:text-blue-200">view report</a>
                         </li>
                     </ul>
                     <% } %>
+                    <div>
+                        <h2 class="text-l font-serif font-semibold underline text-blue-500 bg-yellow-500 p-2">Joined Sessions</h2>
+                        <%- include('display_sessions.ejs',{data:joinedSessions}) %>
+
+                    </div>
                     <div>
                         <%- include('sportsList.ejs',{title: "This following sports are available. Please select one:", data:sports_list}) %>
                     </div>

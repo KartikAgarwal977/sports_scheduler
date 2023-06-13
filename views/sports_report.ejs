@@ -1,0 +1,31 @@
+<%- include("header.ejs", {title,csrfToken}) %>
+<h1 class="text-2xl text-orange-500 font-serif underline">Report</h1>
+<p class="bold font-serif text-l text-red-500"> Total sports &ensp; : &ensp; <%= sport.length  %></p>
+<p class="bold font-serif text-l text-red-500"> Total sessions &ensp; : &ensp; <%= session.length  %></p>
+<br>
+<table class="p-2 hover:shadow-2">
+    <tr class="bg-green-200 p-2">
+        <th class="px-3">Sr. No.</th>
+        <th class="px-3">Sport</th>
+        <th class="px-3">Sessions(cancelled included)</th>
+    </tr>
+    <% sport.forEach((sp, index) => { %>
+        <tr <% if ((index+1)%2==0){ %>
+            class="bg-blue-100 hover:bg-green-100"<% } else { %>
+                class = 'border-2 hover:bg-orange-100'
+            <% } %>>
+            <td class="mx-1 border-2 p-2"><%= index + 1 %></td>
+            <td class="mx-1 border-2 p-2"><%= sp.sports_name %></td>
+            <td class="mx-1 border-2 p-2">
+            <% const sportSessions = session.filter(sess => sess.sportId === sp.id); %>
+            <%= sportSessions.length %>
+            </td>
+        </tr>
+      <% }); %>
+  </table>
+  <br>
+  <p class="bold font-serif text-l text-red-500">
+    Total Cancelled &ensp; : &ensp; <% var cancelled = session.filter(sess => sess.status === 'cancelled') %>
+    <%= cancelled.length %>
+</p>
+<%- include('footer.ejs') %>

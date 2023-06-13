@@ -32,10 +32,12 @@
                             <% } %>
                                 <% if (details.status==='onboard' ){ %>
                                     <% if(!joinsession.includes(sessionId)){ %>
+                                        <% if (details.needed >= 1) { %>
                                         <form action="/sessions/<%= sessionId %>/joinsession" method="post">
                                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                             <button type="submit">join session </button>
                                         </form>
+                                        <% } %>
                                         <% } else { %>
                                             <form action="/sessions/<%= sessionId %>/leaveSession" method="post">
                                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">

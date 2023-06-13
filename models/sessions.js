@@ -10,10 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       sessions.belongsTo(models.sports, {
         foreignKey: "sportId",
+        onDelete: 'CASCADE',
       });
     
       sessions.belongsTo(models.User, {
         foreignKey: "userId",
+        onDelete: 'CASCADE',
       });
     }
 
@@ -95,8 +97,45 @@ module.exports = (sequelize, DataTypes) => {
         }
         return session.save()
         })  
-   }
+    }
     
+    static displayjoinedSession(session_ids) {
+      if (!session_ids || session_ids.length === 0) {
+        return Promise.resolve([]); // Return an empty array if session_ids is null or empty
+      }
+      const idsArray = session_ids
+    .split(',')
+    .map((id) => parseInt(id.trim()))
+    .filter((id) => !isNaN(id)); // Filter out NaN values
+      return this.findAll({
+        where: {
+          id: {
+            [Op.in]: idsArray,
+          },
+          date: {
+            [Op.gt]: new Date(),
+          },
+        },
+      });
+    }
+
+    static getsessionBySport(id) {
+      return this.findAll({
+        where: {
+          sportId: id,
+        }
+      })
+    }
+
+    static deleteSession(idsArray) {
+      return this.destroy({
+        where: {
+          sportId: {
+            [Op.in]: idsArray,
+          },
+          }
+      })
+    }
   }
   sessions.init(
     {

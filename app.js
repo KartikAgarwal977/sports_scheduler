@@ -177,21 +177,26 @@ app.get("/signout", async (req, res) => {
 });
 
 app.get("/sports", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const account = await User.findByPk(req.user.id);
-  const username = `${account.userName}`;
-  const sports_list = await sports.allsports();
-  console.log(username);
-  console.log(account.role);
-  if (req.accepts("html")) {
-    res.render("home", {
-      title: "Home",
-      username,
-      role: account.role,
-      csrfToken: req.csrfToken(),
-      sports_list,
-    });
-  } else {
-    res.json({ message: "Welcome to the sports scheduler." });
+  try {
+    const account = await User.findByPk(req.user.id);
+    const username = account.userName;
+    const joinedSessions = await sessions.displayjoinedSession(account.sessionId);
+    const sports_list = await sports.allsports();
+    if (req.accepts("html")) {
+      res.render("home", {
+        title: "Home",
+        username,
+        role: account.role,
+        csrfToken: req.csrfToken(),
+        joinedSessions,
+        sports_list,
+      });
+    } else {
+      res.send("Unable to load page");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 });
 app.get(
@@ -225,6 +230,7 @@ app.post(
     } catch (error) {
       req.flash("error", "sport already exist");
       console.log(error);
+      res.send(error)
     }
   }
 );
@@ -289,10 +295,21 @@ app.post(
   requirePublisher,
   async (req, res) => {
     try {
+      const session = await sessions.findAll({
+        where: {
+          sportId: req.params.id
+        }
+      });
+
+      const sessionIds = session.map(sess => sess.id);
+
       await sports.deleteSport(req.params.id);
+      await sessions.deleteSession(sessionIds);
+      
       res.redirect("/sports");
     } catch (error) {
       console.log(error);
+      res.status(500).send("An error occurred");
     }
   }
 );
@@ -317,7 +334,6 @@ app.get(
   }
 );
 app.post('/session', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  console.log(req.body.sport_id);
   if (req.body.Date == "Invalid date") {
     req.flash("error", "Invalid date");
     return res.redirect(`/sports/${req.body.sport_id}/new_session`);
@@ -373,7 +389,6 @@ app.get(
     const sportid = session.sportId;
     const sport = await sports.findByPk(sportid);
     const sport_name = sport.sports_name;
-    console.log(sport_name);
     const details = await sessions.getsession(req.params.id);
     const formattedDate = formatDate(details.date);
     const user = await User.findByPk(req.user.id);
@@ -435,22 +450,41 @@ app.post('/sessions/:sessionId/cancelSession', connectEnsureLogin.ensureLoggedIn
     res.status(500).send("An error occurred");
   }
 })
+async function hasJoinedSessionWithDate(user, Session) {
+  const sessionIds = user.sessionId.split(',').map((id) => id.trim());
+  console.log(sessionIds);
+  console.log(Session.date);
+  for (const id of sessionIds) {
+    const session = await sessions.findByPk(parseInt(id));
+    console.log(session);
+    if (session && session.date === Session.date) {
+      return false;
+    }
+  }
+  return true;
+}
+
 app.post('/sessions/:session/joinsession', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   try {
     const sessionId = req.params.session;
     const session = await sessions.findByPk(sessionId);
     const user = await User.findByPk(req.user.id);
-
     if (session.status === "onboard") {
       if (session.date >= new Date()) {
         if (session.needed >= 1) {
-          console.log(user.userName)
-          await sessions.joinSession(sessionId, user.userName)
-          await User.addSessionId(user.id, sessionId)
-          res.redirect(`/sessions/${session.id}`);
+          const hasJoinedSessionWithSameDate = await hasJoinedSessionWithDate(user, session);
+          if (hasJoinedSessionWithSameDate) {
+            console.log(user.userName);
+            await sessions.joinSession(sessionId, user.userName);
+            await User.addSessionId(user.id, sessionId);
+            res.redirect(`/sessions/${session.id}`);
+          } else {
+            console.error("no same date");
+            res.status(400).send("You already have a session of that date");
+          }
         } else {
-          console.error("The Session is full")
-          res.status(400).send("The Session is full")
+          console.error("The Session is full");
+          res.status(400).send("The Session is full");
         }
       } else {
         console.error("Unable to join previous sessions");
@@ -493,6 +527,22 @@ app.post('/sessions/:sessionId/leaveSession', connectEnsureLogin.ensureLoggedIn(
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred");
+  }
+})
+
+app.get("/sports_report", connectEnsureLogin.ensureLoggedIn(), requirePublisher, async (req, res) => {
+  try {
+    const sport = await sports.findAll()
+    const session = await sessions.findAll()
+    res.render("sports_report", {
+      title: "Report",
+      csrfToken : req.csrfToken(),
+      sport,
+      session
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("An error occured")
   }
 })
 module.exports = app;
