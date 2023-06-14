@@ -20,7 +20,7 @@
 5. Can see there joined session separately
 
 ## Video Explaination :-
-
+[click here](https://www.loom.com/share/fe44af15e54e49189dd31a848f316476?sid=8b0d6810-557d-489b-a80b-35a62db5a82e)
 ## ScreenShot
 #### index page
 ![index_page](https://github.com/KartikAgarwal977/sports_scheduler/assets/101928227/7c7763c6-d099-4779-a0e3-1bc907d2ae4b)
